@@ -57,7 +57,7 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result)
         })
-        
+
         //get specific id base service details
         app.get('/services/:id', async (req, res) => {
             const id = req.params.id;
@@ -73,22 +73,36 @@ async function run() {
             res.send(result)
         })
 
-        // app.get('/events', async (req, res) => {
-        //     const page = parseInt(req.query.page);
-        //     const size = parseInt(req.query.size);
-        //     const query = {}
-        //     const cursor = eventCollection.find(query);
-        //     const event = await cursor.skip(page * size).limit(size).toArray();
-        //     const count = await eventCollection.estimatedDocumentCount();
-        //     res.send({ event, count });
-        // })
+        //get all review base on service
+        app.get('/reviews', async (req, res) => {
+            let query = {};
+            if (req.query.serviceId) {
+                query = { service: req.query.serviceId }
+            }
+            const cursor = reviewCollection.find(query)
+            const result = await cursor.sort('date', -1).toArray();
+            res.send(result)
+        })
 
+        //get all review base on user
+        app.get('/myReviews', async (req, res) => {
+            let query = {};
+            if(req.query.email) {
+                query = {email: req.query.email}
+            }
+            const cursor = reviewCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result)
+        })
 
-        // app.post('/volunteer', async (req, res) => {
-        //     const volunteer = req.body;
-        //     const result = await volunteerCollection.insertOne(volunteer);
-        //     res.send(result)
-        // })
+        app.delete('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            let query = { _id: ObjectId(id) };
+            const result = await reviewCollection.deleteOne(query);
+            res.send(result)
+        })
+
 
         // app.get('/volunteer', verifyJWT, async (req, res) => {
         //     const decoded = req.decoded;
@@ -108,15 +122,8 @@ async function run() {
         //     res.send(result)
         // })
 
-        
 
-        // app.delete('/volunteers/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     console.log(id);
-        //     let query = { _id: ObjectId(id) };
-        //     const result = await volunteerCollection.deleteOne(query);
-        //     res.send(result)
-        // })
+
 
         // app.patch('/volunteer/:id', async (req, res) => {
         //     const id = req.params.id;

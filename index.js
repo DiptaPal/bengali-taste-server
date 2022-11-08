@@ -142,28 +142,7 @@ async function run() {
             const result = await reviewCollection.updateOne(query, modifiedReview);
             res.send(result)
         })
-
-        // app.get('/volunteer', verifyJWT, async (req, res) => {
-        //     const decoded = req.decoded;
-        //     if (decoded.email !== req.query.email) {
-        //         res.status(403).send({
-        //             success: false,
-        //             message: 'forbidden'
-        //         })
-        //     }
-
-        //     let query = {};
-        //     if (req.query.email) {
-        //         query = { email: req.query.email }
-        //     }
-        //     const cursor = volunteerCollection.find(query);
-        //     const result = await cursor.toArray();
-        //     res.send(result)
-        // })
-
-
-
-
+        
         //jwt token create
         app.post('/jwt', (req, res) => {
             const user = req.body;

@@ -33,14 +33,16 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const serviceCollection = client.db("bangoliTaste").collection('services');
-        // const volunteerCollection = client.db("bangoliTaste").collection('reviews');
+        const reviewCollection = client.db("bangoliTaste").collection('reviews');
 
+        //post service
         app.post('/services', async (req, res) => {
             const service = req.body;
             const result = await serviceCollection.insertOne(service);
             res.send(result)
         })
 
+        //get only three data of services
         app.get('/services', async (req, res) => {
             let query = {};
             const cursor = serviceCollection.find(query);
@@ -48,10 +50,26 @@ async function run() {
             res.send(result)
         })
 
+        //get all the services
         app.get('/allServices', async (req, res) => {
             let query = {};
             const cursor = serviceCollection.find(query);
             const result = await cursor.toArray();
+            res.send(result)
+        })
+        
+        //get specific id base service details
+        app.get('/services/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await serviceCollection.findOne(query);
+            res.send(result);
+        })
+
+        //store user review
+        app.post('/reviews', async (req, res) => {
+            const service = req.body;
+            const result = await reviewCollection.insertOne(service);
             res.send(result)
         })
 
@@ -65,12 +83,6 @@ async function run() {
         //     res.send({ event, count });
         // })
 
-        // app.get('/events/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     const query = { _id: ObjectId(id) }
-        //     const result = await eventCollection.findOne(query);
-        //     res.send(result);
-        // })
 
         // app.post('/volunteer', async (req, res) => {
         //     const volunteer = req.body;

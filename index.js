@@ -32,12 +32,26 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
     try {
-        const eventCollection = client.db("bangoliTaste").collection('services');
-        const volunteerCollection = client.db("bangoliTaste").collection('reviews');
+        const serviceCollection = client.db("bangoliTaste").collection('services');
+        // const volunteerCollection = client.db("bangoliTaste").collection('reviews');
 
-        app.post('/events', async (req, res) => {
-            const events = req.body;
-            const result = await eventCollection.insertOne(events);
+        app.post('/services', async (req, res) => {
+            const service = req.body;
+            const result = await serviceCollection.insertOne(service);
+            res.send(result)
+        })
+
+        app.get('/services', async (req, res) => {
+            let query = {};
+            const cursor = serviceCollection.find(query);
+            const result = await cursor.limit(3).toArray();
+            res.send(result)
+        })
+
+        app.get('/allServices', async (req, res) => {
+            let query = {};
+            const cursor = serviceCollection.find(query);
+            const result = await cursor.toArray();
             res.send(result)
         })
 
@@ -82,12 +96,7 @@ async function run() {
         //     res.send(result)
         // })
 
-        // app.get('/volunteers', async (req, res) => {
-        //     let query = {};
-        //     const cursor = volunteerCollection.find(query);
-        //     const result = await cursor.toArray();
-        //     res.send(result)
-        // })
+        
 
         // app.delete('/volunteers/:id', async (req, res) => {
         //     const id = req.params.id;
@@ -125,9 +134,9 @@ run().catch(error => console.log(error.message))
 
 
 app.get('/', (req, res) => {
-    res.send('Bangoli Taste Server is Running')
+    res.send('Bengali Taste Server is Running')
 })
 
 app.listen(port, () => {
-    console.log(`Bangoli Taste Server is Online on ${port}`);
+    console.log(`Bengali Taste Server is Online on ${port}`);
 })

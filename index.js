@@ -46,7 +46,7 @@ async function run() {
         app.get('/services', async (req, res) => {
             let query = {};
             const cursor = serviceCollection.find(query);
-            const result = await cursor.limit(3).toArray();
+            const result = await cursor.sort(_id, -1).limit(3).toArray();
             res.send(result)
         })
 
@@ -149,12 +149,12 @@ async function run() {
 
 
 
-
-        // app.post('/jwt', (req, res) => {
-        //     const user = req.body;
-        //     const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '365d' })
-        //     res.send({ token })
-        // })
+        //jwt token create
+        app.post('/jwt', (req, res) => {
+            const user = req.body;
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '365d' })
+            res.send({ token })
+        })
     }
     finally {
         //await client.close();

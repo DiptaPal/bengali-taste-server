@@ -95,6 +95,15 @@ async function run() {
             res.send(result)
         })
 
+        //get all review base on review id
+        app.get('/editReview/:id', async(req, res) =>{
+            const id = req.params.id
+            const query = {_id: ObjectId(id)}
+            const result = await reviewCollection.findOne(query);
+            res.send(result);
+        })
+
+        //delete review base on user
         app.delete('/reviews/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id);
@@ -102,7 +111,22 @@ async function run() {
             const result = await reviewCollection.deleteOne(query);
             res.send(result)
         })
+        
+        app.patch('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const updateReview = req.body;
+            const query = { _id: ObjectId(id) }
 
+            const modifiedReview = {
+                $set: {
+                    date: updateReview.date,
+                    rating: updateReview.rating,
+                    message: updateReview.message
+                }
+            }
+            const result = await reviewCollection.updateOne(query, modifiedReview);
+            res.send(result)
+        })
 
         // app.get('/volunteer', verifyJWT, async (req, res) => {
         //     const decoded = req.decoded;
@@ -125,19 +149,6 @@ async function run() {
 
 
 
-        // app.patch('/volunteer/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     const status = req.body.status
-        //     const query = { _id: ObjectId(id) }
-
-        //     const updateTask = {
-        //         $set: {
-        //             status: status
-        //         }
-        //     }
-        //     const result = await volunteerCollection.updateOne(query, updateTask);
-        //     res.send(result)
-        // })
 
         // app.post('/jwt', (req, res) => {
         //     const user = req.body;

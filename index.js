@@ -17,12 +17,18 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 function verifyJWT(req, res, next) {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
-        return res.status(401).send({ message: 'unauthorized access' })
+        return res.status(401).send({
+            success: false,
+            message: 'Unauthorized access'
+        })
     }
     const token = authHeader.split(' ')[1];
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
         if (err) {
-            res.status(403).send({ message: 'forbidden access' })
+            return res.status(403).send({
+                success: false,
+                message: 'Forbidden access'
+            })
         }
         req.decoded = decoded;
         next()
@@ -45,7 +51,7 @@ async function run() {
         //get only three data of services
         app.get('/services', async (req, res) => {
             let query = {};
-            const cursor = serviceCollection.find(query).sort({_id: -1});
+            const cursor = serviceCollection.find(query).sort({ _id: -1 });
             const result = await cursor.limit(3).toArray();
             res.send(result)
         })
@@ -80,16 +86,23 @@ async function run() {
                 query = { service: req.query.serviceId }
             }
             const cursor = reviewCollection.find(query)
-            const result = await cursor.sort({date: -1}).toArray();
+            const result = await cursor.sort({ date: -1 }).toArray();
             res.send(result)
         })
 
         //get all review base on user
-        app.get('/myReviews',verifyJWT, async (req, res) => {
+        app.get('/myReviews', verifyJWT, async (req, res) => {
+            const decoded = req.decoded;
+            if (decoded.email !== req.query.email) {
+                res.status(403).send({
+                    success: false,
+                    message: 'forbidden access'
+                })
+            }
+
             let query = {};
-            console.log(req.headers);
-            if(req.query.email) {
-                query = {email: req.query.email}
+            if (req.query.email) {
+                query = { email: req.query.email }
             }
             const cursor = reviewCollection.find(query);
             const result = await cursor.toArray();
@@ -97,9 +110,9 @@ async function run() {
         })
 
         //get all review base on review id
-        app.get('/editReview/:id', async(req, res) =>{
+        app.get('/editReview/:id', async (req, res) => {
             const id = req.params.id
-            const query = {_id: ObjectId(id)}
+            const query = { _id: ObjectId(id) }
             const result = await reviewCollection.findOne(query);
             res.send(result);
         })
@@ -107,12 +120,11 @@ async function run() {
         //delete review base on user
         app.delete('/reviews/:id', async (req, res) => {
             const id = req.params.id;
-            console.log(id);
             let query = { _id: ObjectId(id) };
             const result = await reviewCollection.deleteOne(query);
             res.send(result)
         })
-        
+
 
         //update review
         app.patch('/reviews/:id', async (req, res) => {

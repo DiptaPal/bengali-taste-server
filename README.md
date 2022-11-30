@@ -2,9 +2,9 @@
 
 ## Live Link: https://bangoli-taste.web.app/
 
-## Client Side Repository Link: https://github.com/Porgramming-Hero-web-course/b6a11-service-review-client-side-DiptaPal
+## Client Side Repository Link: https://github.com/DiptaPal/bengali-taste-client
 
-## Server Side Repository Link: https://github.com/Porgramming-Hero-web-course/b6a11-service-review-server-side-DiptaPal
+## Server Side Repository Link: https://github.com/DiptaPal/bengali-taste-server
 # <b><u>About:</u><b>
 
 <p>Bengali Taste is a online homemade food delivery service. Bengali Taste always concern about nutrition, tasty and hygienic food. We always to delivery our food on time. We also concern about customer review that why we made this web app for customer review friendly. We always trying to improve our food quality base user review and we are taking all food review by Bengali Taste.<p> 
